@@ -5,16 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>狗狗MBTI性格测试 - 了解你的毛孩个性</title>
     <!DOCTYPE html>
-
-
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- 添加IE兼容模式 -->
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <!-- 禁止电话号码自动识别 -->
-    <meta name="format-detection" content="telephone=no">
-    <title>你的网站</title>
-    
     <!-- 添加CSS重置 -->
     <style>
         * {
@@ -411,48 +401,6 @@
     </footer>
 
     <script>
-
-
-
-        // 1. 添加错误捕获
-window.onerror = function(msg, url, lineNo, columnNo, error) {
-    console.log('错误:', msg, '在:', url, lineNo);
-    return false;
-};
-
-// 2. 特性检测
-if (typeof Promise === 'undefined') {
-    // 不支持Promise，加载polyfill
-    var script = document.createElement('script');
-    script.src = 'https://cdn.polyfill.io/v2/polyfill.min.js';
-    document.head.appendChild(script);
-}
-
-// 3. 使用try-catch包装可能出错的代码
-try {
-    // 你的主要代码
-    initApp();
-} catch (error) {
-    console.error('初始化失败:', error);
-    showErrorPage();
-}
-
-function showErrorPage() {
-    document.body.innerHTML = `
-        <div style="text-align: center; padding: 50px 20px;">
-            <h2>页面加载失败</h2>
-            <p>请尝试以下方法：</p>
-            <ul style="text-align: left; display: inline-block;">
-                <li>刷新页面</li>
-                <li>切换网络</li>
-                <li>使用其他浏览器</li>
-            </ul>
-            <button onclick="location.reload()" style="padding: 10px 20px; margin: 20px;">
-                刷新页面
-            </button>
-        </div>
-    `;
-}
 
 
         // 问题数据
