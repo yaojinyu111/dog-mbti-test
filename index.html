@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>狗狗MBTI性格测试 - 了解你的毛孩个性</title>
+    <style>
+        :root {
+            --primary: #ff9e44;
+            --secondary: #6a4c93;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --success: #28a745;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: var(--dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 150px;
+            height: 150px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+        
+        header::after {
+            content: "";
+            position: absolute;
+            bottom: -80px;
+            left: -80px;
+            width: 200px;
+            height: 200px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: var(--secondary);
+        }
+        
+        h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            color: var(--secondary);
+        }
+        
+        p {
+            margin-bottom: 1rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--primary);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .btn:hover {
+            background-color: #e88c30;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary);
+        }
+        
+        .btn-secondary:hover {
+            background-color: #5a3f7a;
+        }
+        
+        section {
+            padding: 4rem 0;
+        }
+        
+        .intro {
+            background-color: white;
+            text-align: center;
+        }
+        
+        .intro-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .test-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            margin-top: 2rem;
+            display: none;
+        }
+        
+        .question {
+            margin-bottom: 2rem;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-top: 1rem;
+        }
+        
+        .option {
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .option:hover {
+            border-color: var(--primary);
+            background-color: rgba(255, 158, 68, 0.05);
+        }
+        
+        .option.selected {
+            border-color: var(--primary);
+            background-color: rgba(255, 158, 68, 0.1);
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background-color: var(--primary);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .result-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            margin-top: 2rem;
+            display: none;
+            text-align: center;
+        }
+        
+        .personality-type {
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: var(--secondary);
+            margin: 1rem 0;
+        }
+        
+        .personality-description {
+            max-width: 800px;
+            margin: 0 auto 2rem;
+            text-align: left;
+        }
+        
+        .personality-description ul {
+            padding-left: 20px;
+            margin-top: 10px;
+        }
+        
+        .personality-description li {
+            margin-bottom: 8px;
+        }
+        
+        .types-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 2rem;
+        }
+        
+        .type-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease;
+        }
+        
+        .type-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .type-title {
+            font-size: 1.3rem;
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+        }
+        
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+        
+        .share-section {
+            text-align: center;
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        }
+        
+        .qr-code {
+            max-width: 200px;
+            margin: 1rem auto;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        @media (min-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            h2 {
+                font-size: 2rem;
+            }
+            
+            .options {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            section {
+                padding: 2rem 0;
+            }
+            
+            .test-container, .result-container {
+                padding: 1.5rem;
+            }
+            
+            .personality-type {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>🐕 狗狗MBTI性格测试</h1>
+            <p>了解你的毛孩个性，加深你们之间的纽带</p>
+            <a href="#test" class="btn">开始测试</a>
+        </div>
+    </header>
+    
+    <section class="intro">
+        <div class="container intro-content">
+            <h2>你的狗狗是什么性格类型？</h2>
+            <p>就像人类一样，每只狗狗都有独特的性格特点。通过这个基于MBTI理论的测试，你可以更好地了解你的狗狗，知道如何与它更好地相处，满足它的需求。</p>
+            <p>测试包含16个简单问题，大约需要5分钟完成。请根据你的狗狗的日常行为选择最符合的选项。</p>
+            <a href="#test" class="btn" id="start-test">开始测试</a>
+        </div>
+    </section>
+    
+    <section id="test">
+        <div class="container">
+            <h2>狗狗性格测试</h2>
+            <div class="test-container" id="test-container">
+                <div class="progress-bar">
+                    <div class="progress" id="progress"></div>
+                </div>
+                <div class="question" id="question-container">
+                    <!-- 问题将通过JavaScript动态加载 -->
+                </div>
+                <div class="nav-buttons">
+                    <button class="btn btn-secondary" id="prev-btn" disabled>上一题</button>
+                    <button class="btn" id="next-btn">下一题</button>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section id="result">
+        <div class="container">
+            <h2>测试结果</h2>
+            <div class="result-container" id="result-container">
+                <!-- 结果将通过JavaScript动态加载 -->
+            </div>
+        </div>
+    </section>
+    
+    <section id="types">
+        <div class="container">
+            <h2>16种狗狗性格类型</h2>
+            <p>了解不同的狗狗性格类型，帮助你更好地理解各种狗狗的行为特点。</p>
+            <div class="types-grid" id="types-grid">
+                <!-- 类型卡片将通过JavaScript动态加载 -->
+            </div>
+        </div>
+    </section>
+    
+    <section class="share-section">
+        <div class="container">
+            <h2>分享给朋友</h2>
+            <p>将测试分享给其他狗狗主人，一起了解狗狗的性格！</p>
+            <div class="qr-code" id="qr-code">
+                <!-- 二维码将动态生成 -->
+                <p>扫描二维码访问测试</p>
+            </div>
+            <button class="btn" id="share-btn">分享链接</button>
+        </div>
+    </section>
+    
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 狗狗MBTI性格测试 | 仅供娱乐参考</p>
+        </div>
+    </footer>
+
+    <script>
+        // 问题数据
+        const questions = [
+            {
+                question: "当遇到陌生人时，你的狗狗通常会：",
+                options: [
+                    { text: "兴奋地摇尾巴，主动接近", value: "E" },
+                    { text: "保持距离，先观察一会儿", value: "I" }
+                ]
+            },
+            {
+                question: "在公园里，你的狗狗更喜欢：",
+                options: [
+                    { text: "和其他狗狗一起玩耍", value: "E" },
+                    { text: "独自探索环境或和你待在一起", value: "I" }
+                ]
+            },
+            {
+                question: "学习新把戏时，你的狗狗：",
+                options: [
+                    { text: "通过反复练习和奖励很快学会", value: "S" },
+                    { text: "有时会分心，但对有趣的方法反应良好", value: "N" }
+                ]
+            },
+            {
+                question: "当探索新环境时，你的狗狗：",
+                options: [
+                    { text: "仔细嗅闻每一个角落，关注细节", value: "S" },
+                    { text: "快速扫描整体环境，寻找有趣的东西", value: "N" }
+                ]
+            },
+            {
+                question: "当你情绪低落时，你的狗狗：",
+                options: [
+                    { text: "似乎能感知并试图安慰你", value: "F" },
+                    { text: "行为基本不变，继续做自己的事", value: "T" }
+                ]
+            },
+            {
+                question: "在玩耍时，你的狗狗更注重：",
+                options: [
+                    { text: "游戏过程中的互动和情感联系", value: "F" },
+                    { text: "游戏的规则和赢得游戏", value: "T" }
+                ]
+            },
+            {
+                question: "日常散步时，你的狗狗：",
+                options: [
+                    { text: "喜欢固定的路线和时间", value: "J" },
+                    { text: "喜欢探索新路线，对变化感到兴奋", value: "P" }
+                ]
+            },
+            {
+                question: "当计划被打乱时，你的狗狗：",
+                options: [
+                    { text: "似乎有些不安，期待恢复常规", value: "J" },
+                    { text: "轻松适应变化", value: "P" }
+                ]
+            },
+            {
+                question: "在社交场合中，你的狗狗：",
+                options: [
+                    { text: "精力充沛，是关注的焦点", value: "E" },
+                    { text: "比较安静，选择性地互动", value: "I" }
+                ]
+            },
+            {
+                question: "面对新玩具时，你的狗狗：",
+                options: [
+                    { text: "会仔细检查，慢慢熟悉", value: "S" },
+                    { text: "立即投入玩耍，充满好奇心", value: "N" }
+                ]
+            },
+            {
+                question: "当有其他狗狗表现不佳时，你的狗狗：",
+                options: [
+                    { text: "似乎能理解并表现出宽容", value: "F" },
+                    { text: "不太在意，专注于自己的事", value: "T" }
+                ]
+            },
+            {
+                question: "在训练中，你的狗狗对指令的反应：",
+                options: [
+                    { text: "喜欢明确的规则和一致性", value: "J" },
+                    { text: "更喜欢灵活的训练方式", value: "P" }
+                ]
+            },
+            {
+                question: "当家里来客人时，你的狗狗：",
+                options: [
+                    { text: "立即成为聚会的中心", value: "E" },
+                    { text: "需要时间热身才会变得友好", value: "I" }
+                ]
+            },
+            {
+                question: "解决问题时，你的狗狗：",
+                options: [
+                    { text: "使用已知的有效方法", value: "S" },
+                    { text: "尝试创新的方式", value: "N" }
+                ]
+            },
+            {
+                question: "当遇到困难时，你的狗狗：",
+                options: [
+                    { text: "会寻求你的帮助和安慰", value: "F" },
+                    { text: "倾向于自己解决问题", value: "T" }
+                ]
+            },
+            {
+                question: "对于日常安排，你的狗狗：",
+                options: [
+                    { text: "喜欢可预测的作息", value: "J" },
+                    { text: "对即兴活动反应积极", value: "P" }
+                ]
+            }
+        ];
+
+        // 性格类型描述
+        const personalityTypes = {
+            "ISTJ": {
+                title: "忠诚守护者",
+                description: "你的狗狗是可靠、尽责的守护者。它喜欢规律的生活，对家庭极其忠诚。这种类型的狗狗通常很守规矩，是优秀的看门狗。"
+            },
+            "ISFJ": {
+                title: "贴心护卫",
+                description: "你的狗狗温和、体贴，总是关注家人的需求。它非常忠诚，喜欢通过服务来表达爱意，是完美的家庭伴侣。"
+            },
+            "INFJ": {
+                title: "心灵导师",
+                description: "你的狗狗直觉敏锐，能深刻理解人类情绪。它可能有些神秘，但对家人有着深厚的感情和强烈的保护欲。"
+            },
+            "INTJ": {
+                title: "战略大师",
+                description: "你的狗狗独立、聪明，喜欢以自己的方式做事。它可能显得有些高冷，但实际上非常忠诚于它认可的人。"
+            },
+            "ISTP": {
+                title: "巧手工匠",
+                description: "你的狗狗是务实的问题解决者，喜欢探索和动手。它适应力强，对周围环境充满好奇，是优秀的探险伙伴。"
+            },
+            "ISFP": {
+                title: "和谐艺术家",
+                description: "你的狗狗温和、敏感，享受生活中的美好事物。它不喜欢冲突，是平静、忠诚的伴侣，善于用微妙的方式表达情感。"
+            },
+            "INFP": {
+                title: "理想治愈者",
+                description: "你的狗狗是温柔的理想主义者，非常重视和谐与真实。它对主人极其忠诚，能提供深厚的情感支持。"
+            },
+            "INTP": {
+                title: "逻辑学者",
+                description: "你的狗狗聪明、好奇，喜欢分析和理解世界。它可能显得有些独立，但对信任的人会展现出深厚的感情。"
+            },
+            "ESTP": {
+                title: "活力玩家",
+                description: "你的狗狗精力充沛、热爱冒险，是生活中的活力源泉。它喜欢即时满足和刺激，是绝佳的玩伴。"
+            },
+            "ESFP": {
+                title: "欢乐表演者",
+                description: "你的狗狗外向、友好，喜欢成为关注的中心。它充满热情，善于社交，能给每个家庭带来欢乐。"
+            },
+            "ENFP": {
+                title: "灵感激发者",
+                description: "你的狗狗热情、富有创造力，对生活充满好奇。它善于社交，喜欢新鲜体验，是充满活力的伴侣。"
+            },
+            "ENTP": {
+                title: "机智发明家",
+                description: "你的狗狗聪明、机智，喜欢挑战和智力游戏。它可能有点顽皮，但总是能让生活充满乐趣和惊喜。"
+            },
+            "ESTJ": {
+                title: "高效组织者",
+                description: "你的狗狗是负责任的组织者，喜欢结构和秩序。它忠诚、可靠，是优秀的守护者和工作伙伴。"
+            },
+            "ESFJ": {
+                title: "热心照顾者",
+                description: "你的狗狗友善、尽责，非常重视家庭和谐。它喜欢与人互动，是温暖、忠诚的家庭成员。"
+            },
+            "ENFJ": {
+                title: "魅力领导者",
+                description: "你的狗狗富有魅力、善解人意，天生具有领导气质。它善于社交，对家人极其忠诚和保护。"
+            },
+            "ENTJ": {
+                title: "果断指挥官",
+                description: "你的狗狗自信、果断，喜欢掌控局面。它聪明、精力充沛，是优秀的守护者和伙伴。"
+            }
+        };
+
+        // 全局变量
+        let currentQuestion = 0;
+        let answers = {
+            E: 0, I: 0,
+            S: 0, N: 0,
+            T: 0, F: 0,
+            J: 0, P: 0
+        };
+        let selectedOption = null;
+
+        // DOM元素
+        const testContainer = document.getElementById('test-container');
+        const questionContainer = document.getElementById('question-container');
+        const progressBar = document.getElementById('progress');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const startTestBtn = document.getElementById('start-test');
+        const resultContainer = document.getElementById('result-container');
+        const typesGrid = document.getElementById('types-grid');
+        const shareBtn = document.getElementById('share-btn');
+        const qrCodeContainer = document.getElementById('qr-code');
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 加载所有性格类型卡片
+            loadPersonalityTypes();
+            
+            // 生成二维码
+            generateQRCode();
+            
+            // 开始测试按钮事件
+            startTestBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                startTest();
+            });
+            
+            // 上一题按钮事件
+            prevBtn.addEventListener('click', goToPreviousQuestion);
+            
+            // 下一题按钮事件
+            nextBtn.addEventListener('click', goToNextQuestion);
+            
+            // 分享按钮事件
+            shareBtn.addEventListener('click', shareTest);
+        });
+
+        // 开始测试
+        function startTest() {
+            testContainer.style.display = 'block';
+            currentQuestion = 0;
+            answers = { E:0, I:0, S:0, N:0, T:0, F:0, J:0, P:0 };
+            loadQuestion();
+            
+            // 滚动到测试区域
+            document.getElementById('test').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // 加载问题
+        function loadQuestion() {
+            const question = questions[currentQuestion];
+            questionContainer.innerHTML = `
+                <h3>问题 ${currentQuestion + 1} / ${questions.length}</h3>
+                <p>${question.question}</p>
+                <div class="options">
+                    ${question.options.map((option, index) => `
+                        <div class="option" data-value="${option.value}" data-index="${index}">
+                            ${option.text}
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            
+            // 更新进度条
+            progressBar.style.width = `${((currentQuestion + 1) / questions.length) * 100}%`;
+            
+            // 更新按钮状态
+            prevBtn.disabled = currentQuestion === 0;
+            nextBtn.disabled = true;
+            nextBtn.textContent = currentQuestion === questions.length - 1 ? '查看结果' : '下一题';
+            
+            // 添加选项点击事件
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', selectOption);
+            });
+        }
+
+        // 选择选项
+        function selectOption(e) {
+            // 移除之前的选择
+            document.querySelectorAll('.option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            // 标记当前选择
+            e.currentTarget.classList.add('selected');
+            selectedOption = e.currentTarget.dataset.value;
+            
+            // 启用下一题按钮
+            nextBtn.disabled = false;
+        }
+
+        // 前往下一题
+        function goToNextQuestion() {
+            if (selectedOption) {
+                // 记录答案
+                answers[selectedOption]++;
+                
+                // 如果是最后一题，显示结果
+                if (currentQuestion === questions.length - 1) {
+                    showResult();
+                    return;
+                }
+                
+                // 否则加载下一题
+                currentQuestion++;
+                selectedOption = null;
+                loadQuestion();
+            }
+        }
+
+        // 前往上一题
+        function goToPreviousQuestion() {
+            if (currentQuestion > 0) {
+                // 撤回上一题的答案
+                if (selectedOption) {
+                    answers[selectedOption]--;
+                }
+                
+                currentQuestion--;
+                selectedOption = null;
+                loadQuestion();
+            }
+        }
+
+        // 显示结果
+        function showResult() {
+            // 计算性格类型
+            const type = 
+                (answers.E > answers.I ? 'E' : 'I') +
+                (answers.S > answers.N ? 'S' : 'N') +
+                (answers.T > answers.F ? 'T' : 'F') +
+                (answers.J > answers.P ? 'J' : 'P');
+            
+            const personality = personalityTypes[type];
+            
+            // 显示结果
+            resultContainer.innerHTML = `
+                <h3>你的狗狗的性格类型是：</h3>
+                <div class="personality-type">${type} - ${personality.title}</div>
+                <div class="personality-description">
+                    <p>${personality.description}</p>
+                    <p>与${type}类型狗狗相处的小贴士：</p>
+                    <ul>
+                        <li>${getTipsForType(type)}</li>
+                    </ul>
+                </div>
+                <button class="btn" id="retake-test">重新测试</button>
+                <a href="#types" class="btn btn-secondary">查看所有类型</a>
+            `;
+            
+            resultContainer.style.display = 'block';
+            testContainer.style.display = 'none';
+            
+            // 滚动到结果区域
+            document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
+            
+            // 重新测试按钮事件
+            document.getElementById('retake-test').addEventListener('click', startTest);
+        }
+
+        // 根据类型提供建议
+        function getTipsForType(type) {
+            const tips = {
+                "ISTJ": "提供稳定的环境和规律的作息，明确的规则会让它感到安全。",
+                "ISFJ": "给予充分的关爱和肯定，它通过服务表达爱意，请珍惜它的付出。",
+                "INFJ": "尊重它的直觉和敏感，提供安静的空间让它充电。",
+                "INTJ": "提供智力挑战和独立空间，尊重它的独立思考能力。",
+                "ISTP": "提供丰富的探索机会和动手解决问题的挑战。",
+                "ISFP": "创造和谐的环境，避免冲突，欣赏它细腻的情感表达。",
+                "INFP": "支持它的理想主义，提供安全的情感表达空间。",
+                "INTP": "鼓励它的好奇心，提供智力刺激和新奇体验。",
+                "ESTP": "提供充足的运动和冒险机会，满足它对刺激的需求。",
+                "ESFP": "让它参与社交活动，给予表现的机会和充分的关注。",
+                "ENFP": "提供多样化的体验和社交机会，支持它的创意表达。",
+                "ENTP": "挑战它的智力，提供解决问题的机会和自由探索的空间。",
+                "ESTJ": "建立清晰的规则和职责，认可它的贡献和忠诚。",
+                "ESFJ": "重视家庭互动，给予它照顾家人的机会和充分的感激。",
+                "ENFJ": "支持它的领导天性，提供社交机会和情感交流。",
+                "ENTJ": "给予它一定的自主权和决策机会，认可它的能力和贡献。"
+            };
+            
+            return tips[type] || "给予充分的爱和关注，尊重它的个性特点。";
+        }
+
+        // 加载所有性格类型
+        function loadPersonalityTypes() {
+            typesGrid.innerHTML = '';
+            
+            for (const [type, info] of Object.entries(personalityTypes)) {
+                const typeCard = document.createElement('div');
+                typeCard.className = 'type-card';
+                typeCard.innerHTML = `
+                    <div class="type-title">${type} - ${info.title}</div>
+                    <p>${info.description}</p>
+                `;
+                typesGrid.appendChild(typeCard);
+            }
+        }
+
+        // 生成二维码
+        function generateQRCode() {
+            // 使用QRCode.js库生成二维码
+            // 这里简化处理，实际使用时需要引入QRCode.js库
+            const url = window.location.href;
+            qrCodeContainer.innerHTML = `
+                <p>扫描二维码访问测试</p>
+                <div style="text-align:center; padding:10px; background:white; display:inline-block;">
+                    <div style="width:150px; height:150px; background:#f0f0f0; display:flex; align-items:center; justify-content:center; margin:0 auto;">
+                        <span style="color:#666;">二维码预览</span>
+                    </div>
+                </div>
+                <p style="margin-top:10px; font-size:0.9rem; color:#666;">或复制链接:<br>${url}</p>
+            `;
+        }
+
+        // 分享测试
+        function shareTest() {
+            const url = window.location.href;
+            const title = "狗狗MBTI性格测试";
+            const text = "快来测试一下你的狗狗是什么MBTI性格类型吧！";
+            
+            if (navigator.share) {
+                // 使用Web Share API（移动设备支持）
+                navigator.share({
+                    title: title,
+                    text: text,
+                    url: url,
+                })
+                .then(() => console.log('分享成功'))
+                .catch((error) => console.log('分享失败', error));
+            } else {
+                // 备用方案：复制到剪贴板
+                navigator.clipboard.writeText(url).then(() => {
+                    alert('链接已复制到剪贴板，快去分享给朋友吧！');
+                }).catch(err => {
+                    // 如果剪贴板API不可用，显示URL让用户手动复制
+                    prompt('请复制以下链接分享给朋友：', url);
+                });
+            }
+        }
+    </script>
+</body>
+</html>
